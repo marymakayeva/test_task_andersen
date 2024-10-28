@@ -1,0 +1,282 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Operator training API",
+    "description": "API for operators training system to access and manage tests",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://dev.api.operatortests.com"
+    }
+  ],
+  "paths": {
+    "/tests": {
+      "get": {
+        "summary": "Method is used to get list of available tests and optionally sort it by test creation date",
+        "parameters": [
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "description": "Sort tests by creation date. Use 'asc' for oldest to newest and 'desc' for newest to oldest.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with the list of available tests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/test"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "All irregularities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Method is used to create a new test",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/test"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response with details of a created test",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/test"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "All irregularities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tests/{testId}": {
+      "get": {
+        "summary": "Method is used to get details of a chosen test from the list",
+        "parameters": [
+          {
+            "name": "testId",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the test",
+            "schema": {
+              "type": "string",
+              "example": "dbf53716-f0a3-475c-ad8f-dd4ad9579215"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with details of a chosen test",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/test"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "All irregularities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Method is used to update details about chosen test",
+        "parameters": [
+          {
+            "name": "testId",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the test",
+            "schema": {
+              "type": "string",
+              "example": "dbf53716-f0a3-475c-ad8f-dd4ad9579215"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/test"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response with details of a created test",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/test"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "All irregularities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Method is used to delete chosen test and all information about it",
+        "parameters": [
+          {
+            "name": "testId",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the test",
+            "schema": {
+              "type": "string",
+              "example": "dbf53716-f0a3-475c-ad8f-dd4ad9579215"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response which indicates successful deletion"
+          },
+          "default": {
+            "description": "All irregularities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "test": {
+        "type": "object",
+        "properties": {
+          "testId": {
+            "type": "string",
+            "example": "dbf53716-f0a3-475c-ad8f-dd4ad9579215"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fire safety rules"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date",
+            "example": "14.10.2019"
+          },
+          "passingScore": {
+            "type": "string",
+            "example": "80/100"
+          },
+          "attemptsNumber": {
+            "type": "string",
+            "example": "3"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "questionText": {
+                  "type": "string",
+                  "example": "What are your first actions during fire emergency?"
+                },
+                "answers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "answerText": {
+                        "type": "string",
+                        "example": "Go grab some coffee"
+                      },
+                      "isCorrect": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error. Please try again later"
+          }
+        }
+      }
+    }
+  }
+}
